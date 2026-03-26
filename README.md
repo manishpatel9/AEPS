@@ -76,19 +76,7 @@ The project encompasses everything from an aesthetic modern landing page to comp
 
 ---
 
-## Demo Credentials
-
-The database comes fully seeded with mock data to immediately test the platform.
-
-*   **Admin Portal:**
-    *   `Email:` admin@aeps.com
-    *   `Password:` admin123
-*   **Distributor Portal:**
-    *   `Email:` distributor@aeps.com
-    *   `Password:` dist123
-*   **Retailer Portal:**
-    *   `Email:` retailer@aeps.com
-    *   `Password:` retail123
+ 
 
 *(All passwords bypass minimum character lengths purely for demo configurations. In real deployment, change these immediately).*
 
