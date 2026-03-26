@@ -18,44 +18,13 @@
 </head>
 <body>
     <div class="auth-shell">
-        <section class="auth-brand">
-            <div class="brand-row">
-                <img src="{{ asset('assets/rudraxpay.png') }}" alt="RudraxPay" onerror="this.onerror=null;this.src='{{ asset('assets/logo.jpeg') }}'">
-            </div>
-
-            <div class="hero-copy">
-                <h1>Secure access to your RudraxPay dashboard.</h1>
-                <p>Stay on top of settlements, commissions, and daily performance with a clean, real-time view designed for retail operations.</p>
-            </div>
-
-            <div class="value-grid">
-                <div class="value-card">
-                    <strong>Instant Settlement</strong>
-                    <span>Monitor wallet credits in real time.</span>
-                </div>
-                <div class="value-card">
-                    <strong>Reliable Support</strong>
-                    <span>Dedicated team for quick resolution.</span>
-                </div>
-                <div class="value-card">
-                    <strong>Secure Access</strong>
-                    <span>Role-based controls and audit logs.</span>
-                </div>
-                <div class="value-card">
-                    <strong>Unified Services</strong>
-                    <span>AEPS, bill pay, and transfers.</span>
-                </div>
-            </div>
-
-            <div class="trust-row">
-                <div class="trust-pill"><i class="fas fa-shield-alt"></i> NPCI compliant</div>
-                <div class="trust-pill"><i class="fas fa-bolt"></i> 99.9% uptime</div>
-                <div class="trust-pill"><i class="fas fa-headset"></i> Live support</div>
-            </div>
+        <section class="auth-brand" style="padding:0;">
+            <img src="{{ asset('assets/login.png') }}" alt="Login art" style="width:100%;height:100%;min-height:420px;object-fit:cover;display:block;" onerror="this.style.display='none'">
         </section>
 
         <section class="auth-card" aria-labelledby="loginHeading">
-            <div>
+            <div class="card-header">
+                <img src="{{ asset('assets/logo.jpeg') }}" alt="Logo" class="card-logo" onerror="this.onerror=null;this.src='{{ asset('assets/rudraxpay.png') }}'">
                 <h2 id="loginHeading">Welcome back</h2>
                 <p>Sign in to continue your workday.</p>
             </div>

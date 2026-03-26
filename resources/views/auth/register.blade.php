@@ -21,47 +21,29 @@
 </head>
 <body>
     <div class="auth-shell">
-        <section class="auth-brand">
-            <div class="brand-row">
-                <img src="{{ asset('assets/rudraxpay.png') }}" alt="RudraxPay" onerror="this.onerror=null;this.src='{{ asset('assets/logo.jpeg') }}'">
-            </div>
-
-            <div class="hero-copy">
-                <h1>Start your RudraxPay account in minutes.</h1>
-                <p>Simple onboarding for AEPS, bill pay, and commission tracking built for growing outlets.</p>
-            </div>
-
-            <div class="value-grid">
-                <div class="value-card">
-                    <strong>Quick Onboarding</strong>
-                    <span>Activate your retailer ID fast.</span>
-                </div>
-                <div class="value-card">
-                    <strong>Daily Earnings</strong>
-                    <span>Track commissions in one place.</span>
-                </div>
-                <div class="value-card">
-                    <strong>Secure Platform</strong>
-                    <span>Role-based access and logs.</span>
-                </div>
-                <div class="value-card">
-                    <strong>Support Team</strong>
-                    <span>Fast help when you need it.</span>
-                </div>
-            </div>
-
-            <div class="trust-row">
-                <div class="trust-pill"><i class="fas fa-shield-alt"></i> Verified onboarding</div>
-                <div class="trust-pill"><i class="fas fa-bolt"></i> Live settlements</div>
-                <div class="trust-pill"><i class="fas fa-headset"></i> Assisted support</div>
-            </div>
+        <section class="auth-brand" style="padding:0;">
+            <img src="{{ asset('assets/register.png') }}" alt="Register art" style="width:100%;height:100%;min-height:420px;object-fit:cover;display:block;" onerror="this.style.display='none'">
         </section>
 
         <section class="auth-card compact" aria-labelledby="registerHeading">
-            <div>
+            <div class="card-header">
+                <img src="{{ asset('assets/logo.jpeg') }}" alt="Logo" class="card-logo" onerror="this.onerror=null;this.src='{{ asset('assets/rudraxpay.png') }}'">
                 <h2 id="registerHeading">Create your account</h2>
                 <p>Complete the details to activate your profile.</p>
             </div>
+
+            @if(session('success'))
+                <div id="register-toast" class="toast success">{{ session('success') }} <span class="close" aria-hidden="true">&times;</span></div>
+                <div id="register-modal" class="success-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+                    <div class="success-modal-content">
+                        <button class="success-modal-close" aria-label="Close">&times;</button>
+                        <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+                        <h3 id="modalTitle">Success</h3>
+                        <p id="modalDesc">{{ session('success') }}</p>
+                        <button class="btn-primary" onclick="location='{{ route('login') }}'">Continue to Sign in</button>
+                    </div>
+                </div>
+            @endif
 
             @if($errors->any())
                 <div class="alert alert-danger" role="alert">@foreach($errors->all() as $e)<div>{{ $e }}</div>@endforeach</div>
@@ -145,6 +127,34 @@
                 toggle.innerHTML = shown ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
                 pass.focus();
             });
+        })();
+    </script>
+    <script>
+        // Toast and centered modal show/dismiss for register success
+        (function(){
+            const toast = document.getElementById('register-toast');
+            const modal = document.getElementById('register-modal');
+            if(toast){
+                // show toast
+                setTimeout(()=> toast.classList.add('show'), 40);
+                // auto hide
+                const hideToast = ()=> toast.classList.remove('show');
+                const t = setTimeout(hideToast, 4200);
+                // manual close
+                const closeBtn = toast.querySelector('.close');
+                if(closeBtn){ closeBtn.addEventListener('click', ()=>{ clearTimeout(t); hideToast(); }); }
+            }
+            if(modal){
+                // show modal slightly after toast
+                setTimeout(()=> modal.classList.add('show'), 140);
+                const hideModal = ()=> modal.classList.remove('show');
+                // auto hide after a bit (optional)
+                const m = setTimeout(hideModal, 5200);
+                const closeBtn = modal.querySelector('.success-modal-close');
+                if(closeBtn){ closeBtn.addEventListener('click', ()=>{ clearTimeout(m); hideModal(); }); }
+                // hide when clicking overlay outside content
+                modal.addEventListener('click', (e)=>{ if(e.target === modal){ clearTimeout(m); hideModal(); } });
+            }
         })();
     </script>
     </body>

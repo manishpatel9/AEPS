@@ -26,10 +26,11 @@
             --bg-soft: #efe8df;
             --surface: #ffffff;
             --surface-alt: #fbf7f2;
-            --text-primary: #1f2937;
+            --header-bg: #FFFFFF; /* Light mode header background */
+            --text-primary: #0F172A; /* Primary Text (Light) */
             --text-secondary: #4b5563;
-            --text-muted: #8b97a6;
-            --border-color: rgba(15,23,42,0.08);
+            --text-muted: #64748B; /* Icon / Muted Text (Light) */
+            --border-color: #E2E8F0; /* Border / Divider (Light) */
 
             --sidebar-bg: linear-gradient(180deg,#0f172a 0%, #111827 100%);
             --sidebar-text: #f8fafc;
@@ -155,7 +156,7 @@
         }
         .topbar {
             position: sticky; top: 0; z-index: 999;
-            background: rgba(255,255,255,0.9);
+            background: var(--header-bg, rgba(255,255,255,0.9));
             backdrop-filter: blur(14px);
             border-bottom: 1px solid var(--border-color);
             padding: 0 30px; height: 72px;
@@ -508,10 +509,11 @@
             --bg-soft: #0f172a;
             --surface: #111827;
             --surface-alt: #0f172a;
-            --text-primary: #e5e7eb;
+            --header-bg: #1E293B; /* Header Background (Dark) */
+            --text-primary: #F8FAFC; /* Primary Text (Dark) */
             --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
-            --border-color: rgba(148,163,184,0.18);
+            --text-muted: #94A3B8; /* Icon / Muted Text (Dark) */
+            --border-color: #334155; /* Border / Divider (Dark) */
             --card-bg: #111827;
             --shadow: 0 14px 32px rgba(0,0,0,0.35);
             --shadow-lg: 0 30px 70px rgba(0,0,0,0.45);
@@ -520,8 +522,8 @@
             --sidebar-muted: rgba(226,232,240,0.7);
         }
         body.dark-theme::before { opacity: 0.25; }
-        body.dark-theme .topbar { background: rgba(15,23,42,0.85); border-bottom-color: rgba(148,163,184,0.2); }
-        body.dark-theme .topbar-search { background: rgba(15,23,42,0.7); border-color: rgba(148,163,184,0.2); }
+        body.dark-theme .topbar { background: var(--header-bg) !important; border-bottom-color: var(--border-color); }
+        body.dark-theme .topbar-search { background: rgba(15,23,42,0.7); border-color: var(--border-color); }
         body.dark-theme .topbar-search input { color: var(--text-primary); }
         body.dark-theme .page-hero { background: rgba(15,23,42,0.7); }
         body.dark-theme .topbar-user { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.08); }

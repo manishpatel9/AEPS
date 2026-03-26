@@ -3,7 +3,7 @@
   --auth-bg2: rgba(15,118,110,0.10);
   --auth-gradient-1: #0f766e;
   --auth-gradient-2: #2563eb;
-  --auth-heading: #031025;
+  --auth-heading: var(--auth-cta);
   --auth-subtext: #475569;
   --auth-cta: #0b69e6;
   --auth-ink: #0b1320;
@@ -42,8 +42,8 @@ body::after { width: 560px; height: 560px; bottom: -220px; left: -140px; backgro
 
 .auth-card{ background: var(--auth-surface) !important; border-radius:10px !important; padding:8px 12px !important; box-shadow: 0 6px 14px rgba(2,6,23,0.03) !important; border: 1px solid rgba(2,6,23,0.04) !important; width:100%; max-width: none !important; box-sizing: border-box; }
 
-.auth-card h2{ font-family: 'Fraunces', serif; font-size:22px !important; color:var(--auth-heading) !important; margin-bottom:4px; letter-spacing:-0.3px; }
-.auth-card p{ color:var(--auth-subtext) !important; margin-bottom:4px; }
+.auth-card h2{ font-family: 'Fraunces', serif; font-size:22px !important; color:var(--auth-heading) !important; margin-bottom:4px !important; letter-spacing:-0.3px; }
+.auth-card p{ color:var(--auth-subtext) !important; margin-bottom:4px !important; }
 
 /* Compact variant used by register */
 .auth-card.compact{ max-width:380px !important; padding:20px 20px !important; }
@@ -79,3 +79,34 @@ body::after { width: 560px; height: 560px; bottom: -220px; left: -140px; backgro
 /* Responsive tweaks */
 @media (max-width:980px){ .auth-shell{ grid-template-columns: 1fr; padding:18px; gap:18px; } .auth-brand{ order:2; } }
 @media (max-width:640px){ .auth-shell{ padding: 18px; } .auth-card{ max-width: 100% !important; box-shadow: 0 10px 30px rgba(2,6,23,0.06) !important; } }
+
+/* Card header with small logo */
+.card-header{ display:flex; flex-direction:column; align-items:center; gap:4px; margin-bottom:4px; }
+.card-logo{ width:150px; height:auto; display:block; border-radius:8px; box-shadow: 0 8px 26px rgba(2,6,23,0.08); margin-bottom:0; }
+@media (max-width:980px){ .card-logo{ width:120px; } }
+@media (max-width:640px){ .card-logo{ width:80px; } .card-header{ gap:8px; } }
+
+/* Top-left logo inside auth shell */
+.auth-toplogo{ position:absolute; top:12px; left:18px; z-index:4; display:block; }
+.auth-toplogo img{ width:220px; height:auto; display:block; filter:none; }
+@media (max-width:980px){ .auth-toplogo{ left:12px; top:10px; } .auth-toplogo img{ width:160px; } }
+
+/* no extra duplicate margin rules */
+
+/* Toast / popup */
+.toast{ position: fixed; top: 22px; right: 22px; background: linear-gradient(90deg,#06b6d4,#2563eb); color:#fff; padding:10px 16px; border-radius:10px; box-shadow:0 10px 30px rgba(2,6,23,0.12); z-index:9999; opacity:0; transform: translateY(-8px); transition: opacity .28s ease, transform .28s ease; pointer-events:none; font-weight:600; }
+.toast.show{ opacity:1; transform: translateY(0); pointer-events:auto; }
+.toast.success{ background: linear-gradient(90deg,#10b981,#06b6d4); }
+.toast .close{ margin-left:12px; background: rgba(255,255,255,0.12); border-radius:6px; padding:4px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
+
+/* Centered success modal */
+.success-modal{ position: fixed; inset:0; display:flex; align-items:center; justify-content:center; background: rgba(2,6,23,0.45); opacity:0; pointer-events:none; transition: opacity .28s ease; z-index:10000; }
+.success-modal.show{ opacity:1; pointer-events:auto; }
+.success-modal-content{ background: #fff; padding:22px 26px; border-radius:12px; width: min(520px,92%); text-align:center; box-shadow: 0 18px 40px rgba(2,6,23,0.18); position:relative; }
+.success-modal .success-icon{ font-size:48px; color:#10b981; margin-bottom:10px; }
+.success-modal h3{ margin:0 0 6px; font-size:20px; color:var(--auth-heading); }
+.success-modal p{ margin:0 0 12px; color:var(--auth-muted); font-size:14px; }
+.success-modal-close{ position:absolute; top:10px; right:10px; background:transparent; border:0; font-size:20px; color:#94a3b8; cursor:pointer; padding:6px; border-radius:6px; }
+.success-modal-content .btn-primary{ margin-top:12px; }
+
+@media (max-width:640px){ .success-modal-content{ padding:18px; } .success-modal .success-icon{ font-size:40px; } }
