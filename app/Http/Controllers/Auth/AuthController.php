@@ -12,6 +12,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -67,6 +71,89 @@ class AuthController extends Controller
     public function showRegister()
     {
         return view('auth.register');
+    }
+
+    /**
+     * Show the form to request a password reset link.
+     */
+    public function showForgotForm()
+    {
+        return view('auth.passwords.email');
+    }
+
+    /**
+     * Send a password reset link to the given user.
+     */
+    public function sendResetLinkEmail(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        try {
+            $status = Password::sendResetLink($request->only('email'));
+
+            if ($status === Password::RESET_LINK_SENT) {
+                return back()->with('success', __($status));
+            }
+
+            return back()->withErrors(['email' => __($status)]);
+        } catch (\Throwable $ex) {
+            // Mail transport failed (DNS/SMTP issue). Fall back to generating the token
+            // and logging the reset link so local testing still works.
+            Log::warning('Mail transport error while sending password reset: ' . $ex->getMessage());
+
+            $user = \App\Models\User::where('email', $request->email)->first();
+            if (! $user) {
+                return back()->withErrors(['email' => 'Unable to send reset link.']);
+            }
+
+            // Create a token and persist it via the broker
+            $token = Password::broker()->createToken($user);
+
+            // Build reset URL
+            $resetUrl = url(route('password.reset', ['token' => $token, 'email' => $user->email], false));
+
+            // Log the URL for developer to copy/use
+            Log::info('Password reset URL for ' . $user->email . ': ' . $resetUrl);
+
+            // Also return a success message to the user (without exposing token)
+            return back()->with('success', 'We have emailed your password reset link. (If email delivery failed, a reset link was logged for local testing.)');
+        }
+    }
+
+    /**
+     * Show the password reset form for the given token.
+     */
+    public function showResetForm($token)
+    {
+        return view('auth.passwords.reset', compact('token'));
+    }
+
+    /**
+     * Reset the user's password.
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->password = Hash::make($password);
+                $user->setRememberToken(Str::random(60));
+                $user->save();
+                event(new PasswordReset($user));
+            }
+        );
+
+        if ($status === Password::PASSWORD_RESET) {
+            return redirect()->route('login')->with('success', __('Your password has been reset. You can now login.'));
+        }
+
+        return back()->withErrors(['email' => __($status)]);
     }
 
     public function register(Request $request)

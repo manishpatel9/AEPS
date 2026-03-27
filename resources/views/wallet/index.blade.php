@@ -3,8 +3,8 @@
 @section('page_title', 'My Wallet')
 @section('content')
 <div class="stats-grid">
-    <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-wallet"></i></div><div class="stat-value">₹{{ number_format($wallet->balance ?? 0, 2) }}</div><div class="stat-label">Available Balance</div></div>
-    <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-piggy-bank"></i></div><div class="stat-value">₹{{ number_format($wallet->asset_balance ?? 0, 2) }}</div><div class="stat-label">Asset Balance</div></div>
+    <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-wallet"></i></div><div class="stat-value" data-number="{{ (float) ($wallet->balance ?? 0) }}" data-decimals="2" data-prefix="₹">₹{{ number_format($wallet->balance ?? 0, 2) }}</div><div class="stat-label">Available Balance</div></div>
+    <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-piggy-bank"></i></div><div class="stat-value" data-number="{{ (float) ($wallet->asset_balance ?? 0) }}" data-decimals="2" data-prefix="₹">₹{{ number_format($wallet->asset_balance ?? 0, 2) }}</div><div class="stat-label">Asset Balance</div></div>
     <div class="stat-card green"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-value">{{ ucfirst($wallet->status ?? 'active') }}</div><div class="stat-label">Wallet Status</div></div>
 </div>
 

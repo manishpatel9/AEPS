@@ -110,3 +110,9 @@ body::after { width: 560px; height: 560px; bottom: -220px; left: -140px; backgro
 .success-modal-content .btn-primary{ margin-top:12px; }
 
 @media (max-width:640px){ .success-modal-content{ padding:18px; } .success-modal .success-icon{ font-size:40px; } }
+
+/* Alerts */
+.alert{ padding:10px 12px; border-radius:8px; margin-bottom:10px; font-weight:600; }
+.alert-success{ color: #065f46; background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.12); }
+.alert-danger{ color: #b91c1c; background: rgba(185,28,28,0.04); border: 1px solid rgba(185,28,28,0.12); }
+

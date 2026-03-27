@@ -57,4 +57,12 @@ class User extends Authenticatable
     {
         return $this->wallet ? $this->wallet->balance : 0;
     }
+
+    /**
+     * Override the default password reset notification to use custom HTML template.
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\ResetPasswordHtml($token));
+    }
 }
