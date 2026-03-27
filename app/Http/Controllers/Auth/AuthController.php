@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\WelcomeAccountCreated;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Models\Profile;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -166,13 +168,15 @@ class AuthController extends Controller
                 'password' => 'required|min:6|confirmed',
             ]);
 
+            $plainPassword = $request->password;
+
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'mobile' => $request->mobile,
                 'role' => 'retailer',
                 'status' => 'pending',
-                'password' => Hash::make($request->password),
+                'password' => Hash::make($plainPassword),
             ]);
 
             Wallet::create(['user_id' => $user->id, 'balance' => 0]);
@@ -184,6 +188,12 @@ class AuthController extends Controller
                 'description' => 'New user registered',
                 'ip_address' => $request->ip(),
             ]);
+
+            try {
+                Mail::to($user->email)->send(new WelcomeAccountCreated($user, $plainPassword));
+            } catch (\Throwable $mailException) {
+                Log::warning('Welcome mail could not be sent after registration for ' . $user->email . ': ' . $mailException->getMessage());
+            }
 
             // Keep user on register page and show a success message (admin approval pending)
             return back()->with('success', 'Registration successful! Please wait for admin approval.');

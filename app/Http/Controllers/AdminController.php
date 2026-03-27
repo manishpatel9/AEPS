@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\WelcomeAccountCreated;
 use App\Models\User;
 use App\Models\Bank;
 use App\Models\ApiProvider;
@@ -24,6 +25,8 @@ use App\Models\KycDocument;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
@@ -58,10 +61,12 @@ class AdminController extends Controller
             'password' => 'required|min:6',
         ]);
 
+        $plainPassword = $request->password;
+
         $user = User::create([
             'name' => $request->name, 'email' => $request->email,
             'mobile' => $request->mobile, 'role' => $request->role,
-            'status' => 'active', 'password' => Hash::make($request->password),
+            'status' => 'active', 'password' => Hash::make($plainPassword),
             'email_verified_at' => now(),
         ]);
 
@@ -78,6 +83,12 @@ class AdminController extends Controller
             'new_values' => json_encode($user->toArray()),
             'ip_address' => $request->ip(),
         ]);
+
+        try {
+            Mail::to($user->email)->send(new WelcomeAccountCreated($user, $plainPassword));
+        } catch (\Throwable $mailException) {
+            Log::warning('Welcome mail could not be sent after admin user creation for ' . $user->email . ': ' . $mailException->getMessage());
+        }
 
         return redirect()->route('admin.users')->with('success', 'User created successfully.');
     }
