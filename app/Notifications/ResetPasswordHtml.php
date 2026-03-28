@@ -25,24 +25,18 @@ class ResetPasswordHtml extends Notification
     public function toMail($notifiable)
     {
         $url = url(route('password.reset', ['token' => $this->token, 'email' => $notifiable->getEmailForPasswordReset()], false));
-
-        // Attempt to embed the logo as a base64 data URI so the image shows inside the email
-        $logoPath = public_path('assets/logo.jpeg');
-        $logo = null;
-        if (file_exists($logoPath) && is_readable($logoPath)) {
-            $data = base64_encode(file_get_contents($logoPath));
-            $logo = 'data:image/jpeg;base64,' . $data;
-        } else {
-            // Fallback to the public asset URL
-            $logo = asset('assets/logo.jpeg');
-        }
+        $brandName = 'RudraxPay';
+        $supportEmail = env('SUPPORT_EMAIL', config('mail.from.address', 'support@rudraxpay.com'));
+        $supportPhone = env('SUPPORT_PHONE', '+91-XXXXXXXXXX');
 
         return (new MailMessage)
-            ->subject('Reset your RudraXPay password')
+            ->subject('Reset your ' . $brandName . ' password')
             ->view('emails.password_reset', [
                 'url' => $url,
                 'name' => $notifiable->name ?? $notifiable->email,
-                'logo' => $logo,
+                'brandName' => $brandName,
+                'supportEmail' => $supportEmail,
+                'supportPhone' => $supportPhone,
             ]);
     }
 }

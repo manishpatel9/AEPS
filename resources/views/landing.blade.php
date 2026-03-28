@@ -26,6 +26,7 @@
             --shadow: 0 18px 50px rgba(11,27,43,0.12);
             --shadow-strong: 0 30px 80px rgba(11,27,43,0.18);
             --radius: 18px;
+            --nav-ink: #13085d; /* darker blue-teal for header/nav text */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -81,10 +82,11 @@
             position: sticky;
             top: 0;
             z-index: 200;
-            background: rgba(255,255,255,0.82);
-            backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--stroke);
-            box-shadow: 0 8px 24px rgba(11,27,43,0.08);
+            background: linear-gradient(180deg, rgba(118, 189, 228, 0.9), rgba(231, 230, 156, 0.7));
+            /* subtle bluish tint and slightly transparent for light-weight look */
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(14,165,164,0.08);
+            box-shadow: 0 6px 16px rgba(14,165,164,0.06);
         }
         .nav-inner {
             display: flex;
@@ -98,7 +100,7 @@
             align-items: center;
             gap: 12px;
             font-weight: 800;
-            color: var(--ink);
+            color: var(--nav-ink);
         }
         .brand img { height: 52px; width: auto; }
         .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
@@ -110,7 +112,7 @@
             gap: 24px;
             align-items: center;
             font-weight: 600;
-            color: var(--ink-2);
+            color: var(--nav-ink);
         }
         .nav-links a { position: relative; padding: 6px 0; }
         .nav-links a::after {
@@ -802,6 +804,7 @@
                         <div class="form-stack">
                             <input name="name" type="text" class="form-control" placeholder="Full Name" required>
                             <input name="phone" type="tel" class="form-control" placeholder="Phone Number" required>
+                            <input name="email" type="email" class="form-control" placeholder="Email Address" required>
                             <select name="role" class="form-control" aria-label="Role">
                                 <option value="retailer">Retailer</option>
                                 <option value="distributor">Distributor</option>

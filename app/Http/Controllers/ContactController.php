@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Contact;
-use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactAcknowledgement;
 use App\Mail\ContactReceived;
+use App\Models\Contact;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
 {
@@ -17,27 +18,36 @@ class ContactController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:191'],
             'phone' => ['required', 'string', 'max:32'],
+            'email' => ['required', 'email', 'max:191'],
             'role' => ['nullable', 'string', 'max:64'],
             'message' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        // add request metadata
+        // Add request metadata for admin follow-up and debugging.
         $data['ip_address'] = $request->ip();
         $data['user_agent'] = substr($request->userAgent() ?? '', 0, 1000);
 
         $contact = Contact::create($data);
 
-        // send notification email to admin (uses CONTACT_ADMIN_EMAIL env or MAIL_FROM_ADDRESS fallback)
+        // Send notification email to admin.
         try {
             $recipient = env('CONTACT_ADMIN_EMAIL', env('MAIL_FROM_ADDRESS'));
-            if($recipient) {
+            if ($recipient) {
                 Mail::to($recipient)->send(new ContactReceived($contact));
             }
         } catch (\Throwable $e) {
-            // don't break user flow on mail failure; log for later (laravel will log automatically)
+            // Don't break user flow on admin mail failure.
             report($e);
         }
 
-        return back()->with('status', 'Thanks — we will contact you shortly.');
+        // Send acknowledgement email to the person who submitted the form.
+        try {
+            Mail::to($contact->email)->send(new ContactAcknowledgement($contact));
+        } catch (\Throwable $e) {
+            // Don't break user flow on customer mail failure.
+            report($e);
+        }
+
+        return back()->with('status', 'Thanks - we will contact you shortly.');
     }
 }

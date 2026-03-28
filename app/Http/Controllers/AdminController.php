@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\KycStatusUpdated;
 use App\Mail\WelcomeAccountCreated;
 use App\Models\User;
 use App\Models\Bank;
@@ -270,6 +271,15 @@ class AdminController extends Controller
         if ($doc->user && $doc->user->profile) {
             $doc->user->profile->update(['kyc_status' => $request->status === 'verified' ? 'verified' : 'rejected']);
         }
+
+        if ($doc->user && $doc->user->email) {
+            try {
+                Mail::to($doc->user->email)->send(new KycStatusUpdated($doc->user, $request->status));
+            } catch (\Throwable $mailException) {
+                Log::warning('KYC status mail could not be sent to ' . $doc->user->email . ': ' . $mailException->getMessage());
+            }
+        }
+
         return back()->with('success', 'KYC status updated.');
     }
 
