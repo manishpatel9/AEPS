@@ -189,11 +189,13 @@ class AuthController extends Controller
                 'ip_address' => $request->ip(),
             ]);
 
-            try {
-                Mail::to($user->email)->send(new WelcomeAccountCreated($user, $plainPassword));
-            } catch (\Throwable $mailException) {
-                Log::warning('Welcome mail could not be sent after registration for ' . $user->email . ': ' . $mailException->getMessage());
-            }
+            app()->terminating(function () use ($user, $plainPassword) {
+                try {
+                    Mail::to($user->email)->send(new WelcomeAccountCreated($user, $plainPassword));
+                } catch (\Throwable $mailException) {
+                    Log::warning('Welcome mail could not be sent after registration for ' . $user->email . ': ' . $mailException->getMessage());
+                }
+            });
 
             // Keep user on register page and show a success message (admin approval pending)
             return back()->with('success', 'Registration successful! Please wait for admin approval.');

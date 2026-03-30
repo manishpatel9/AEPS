@@ -35,7 +35,7 @@ Route::get('/', function () {
             'name' => 'Pradip Mili',
             'sub' => 'Retail Store',
             'quote' => 'RudraxPay का प्लेटफ़ॉर्म बहुत ही आसान और उपयोगी है। AePS, बिल भुगतान और रिचार्ज जैसी सेवाएँ बहुत ही आसान हैं — इससे मेरी हर महीने 70 हज़ार कमाने में मदद मिली।',
-            'image' => file_exists(public_path('storage/users/pradip.jpg')) ? asset('storage/users/pradip.jpg') : asset('assets/logo.jpeg'),
+            'image' => file_exists(public_path('storage/users/pradip.jpg')) ? asset('storage/users/pradip.jpg') : asset('assets/logo_bg.png'),
             'rating' => 4,
         ],
     ];

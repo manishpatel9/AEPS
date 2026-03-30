@@ -85,11 +85,13 @@ class AdminController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        try {
-            Mail::to($user->email)->send(new WelcomeAccountCreated($user, $plainPassword));
-        } catch (\Throwable $mailException) {
-            Log::warning('Welcome mail could not be sent after admin user creation for ' . $user->email . ': ' . $mailException->getMessage());
-        }
+        app()->terminating(function () use ($user, $plainPassword) {
+            try {
+                Mail::to($user->email)->send(new WelcomeAccountCreated($user, $plainPassword));
+            } catch (\Throwable $mailException) {
+                Log::warning('Welcome mail could not be sent after admin user creation for ' . $user->email . ': ' . $mailException->getMessage());
+            }
+        });
 
         return redirect()->route('admin.users')->with('success', 'User created successfully.');
     }
@@ -273,11 +275,16 @@ class AdminController extends Controller
         }
 
         if ($doc->user && $doc->user->email) {
-            try {
-                Mail::to($doc->user->email)->send(new KycStatusUpdated($doc->user, $request->status));
-            } catch (\Throwable $mailException) {
-                Log::warning('KYC status mail could not be sent to ' . $doc->user->email . ': ' . $mailException->getMessage());
-            }
+            $kycUser = $doc->user;
+            $kycStatus = $request->status;
+
+            app()->terminating(function () use ($kycUser, $kycStatus) {
+                try {
+                    Mail::to($kycUser->email)->send(new KycStatusUpdated($kycUser, $kycStatus));
+                } catch (\Throwable $mailException) {
+                    Log::warning('KYC status mail could not be sent to ' . $kycUser->email . ': ' . $mailException->getMessage());
+                }
+            });
         }
 
         return back()->with('success', 'KYC status updated.');

@@ -12,12 +12,11 @@
                 <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:760px;background:linear-gradient(180deg,#0d3d91 0%,#164da8 50%,#eef5ff 100%);border-radius:28px;overflow:hidden;box-shadow:0 18px 40px rgba(13,61,145,0.18);">
                     <tr>
                         <td style="padding:32px 32px 26px;text-align:center;">
-                            @php($brand = $brandName ??                            @php($logoPath = public_path('assets/logo.jpeg'))
+                            @php($logoPath = public_path('assets/logo.jpeg'))
                             @if(isset($message) && file_exists($logoPath))
-                                <img src="{{ $message->embed($logoPath) }}" alt="{{ $brand }}" style="max-width:260px;width:100%;height:auto;">
-;height:auto;">
+                                <img src="{{ $message->embed($logoPath) }}" alt="{{ $brand ?? 'Brand' }}" style="max-width:260px;width:100%;height:auto;">
                             @else
-                                <div style="font-size:42px;font-weight:800;line-height:1;color:#ffffff;letter-spacing:-1px;">{{ $brand }}</div>
+                                <div style="font-size:42px;font-weight:800;line-height:1;color:#ffffff;letter-spacing:-1px;">{{ $brand ?? 'Brand' }}</div>
                             @endif
                             <div style="font-size:22px;font-weight:800;color:#ffffff;margin-top:16px;">Password Reset Request</div>
                             <div style="font-size:15px;line-height:1.6;color:rgba(255,255,255,0.88);margin-top:6px;">Secure access starts with a fresh password.</div>

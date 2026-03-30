@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password - RudraxPay</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
 </head>
 <body>
 <div class="auth-shell">
     <section class="auth-brand" style="padding:0;">
-        <img src="{{ asset('assets/login.png') }}" alt="Login art" style="width:100%;height:100%;min-height:420px;object-fit:cover;display:block;" onerror="this.style.display='none'">
+        <img src="{{ asset('assets/login.png') }}" alt="Login art" loading="lazy" decoding="async" fetchpriority="low" style="width:100%;height:100%;min-height:420px;object-fit:cover;display:block;" onerror="this.style.display='none'">
     </section>
 
     <section class="auth-card" aria-labelledby="resetHeading">
         <div class="card-header">
-            <img src="{{ asset('assets/logo.jpeg') }}" alt="Logo" class="card-logo">
+            <img src="{{ asset('assets/logo_bg.png') }}" alt="Logo" class="card-logo" decoding="async">
             <h2 id="resetHeading">Reset your password</h2>
             <p>Enter your account email and we'll send a reset link.</p>
         </div>

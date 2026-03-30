@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'RudraxPay')</title>
     <meta name="description" content="RudraxPay AEPS - secure, professional, and user-friendly fintech services for retailers.">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --font-sans: 'Space Grotesk', sans-serif;
-            --font-display: 'Fraunces', serif;
+            --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            --font-display: Georgia, "Times New Roman", serif;
             --ink: #0b1b2b;
             --ink-2: #1f2a44;
             --muted: #5b6b82;
@@ -220,7 +220,7 @@
     <nav class="simple-nav" role="navigation" aria-label="Main navigation">
         <div class="container nav-inner">
             <a href="{{ route('home') }}" class="brand">
-                <img src="{{ asset('assets/rudraxpay.png') }}" alt="RudraxPay" onerror="this.onerror=null;this.src='{{ asset('assets/logo.jpeg') }}'" />
+                <img src="{{ asset('assets/rudraxpay.png') }}" alt="RudraxPay" decoding="async" onerror="this.onerror=null;this.src='{{ asset('assets/logo_bg.png') }}'" />
                 <div class="brand-text">
                     <span>RudraxPay</span>
                     <small>AEPS Platform</small>

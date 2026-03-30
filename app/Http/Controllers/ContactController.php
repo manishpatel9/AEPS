@@ -29,24 +29,24 @@ class ContactController extends Controller
 
         $contact = Contact::create($data);
 
-        // Send notification email to admin.
-        try {
-            $recipient = env('CONTACT_ADMIN_EMAIL', env('MAIL_FROM_ADDRESS'));
-            if ($recipient) {
-                Mail::to($recipient)->send(new ContactReceived($contact));
+        app()->terminating(function () use ($contact) {
+            // Send notification email to admin after the response has been returned.
+            try {
+                $recipient = env('CONTACT_ADMIN_EMAIL', env('MAIL_FROM_ADDRESS'));
+                if ($recipient) {
+                    Mail::to($recipient)->send(new ContactReceived($contact));
+                }
+            } catch (\Throwable $e) {
+                report($e);
             }
-        } catch (\Throwable $e) {
-            // Don't break user flow on admin mail failure.
-            report($e);
-        }
 
-        // Send acknowledgement email to the person who submitted the form.
-        try {
-            Mail::to($contact->email)->send(new ContactAcknowledgement($contact));
-        } catch (\Throwable $e) {
-            // Don't break user flow on customer mail failure.
-            report($e);
-        }
+            // Send acknowledgement email to the person who submitted the form.
+            try {
+                Mail::to($contact->email)->send(new ContactAcknowledgement($contact));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        });
 
         return back()->with('status', 'Thanks - we will contact you shortly.');
     }

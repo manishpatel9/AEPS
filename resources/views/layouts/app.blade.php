@@ -6,12 +6,12 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'AEPS Platform') - Aadhaar Enabled Payment System</title>
     <meta name="description" content="@yield('meta_description', 'AEPS Platform - Secure Aadhaar Enabled Payment System for Cash Withdrawal, Balance Enquiry, Mini Statement, Bill Payments & More')">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --font-sans: 'Outfit', sans-serif;
-            --font-display: 'Fraunces', serif;
+            --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            --font-display: Georgia, "Times New Roman", serif;
 
             --primary: #1d4ed8;
             --primary-dark: #1e40af;
@@ -809,7 +809,7 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
                 <div class="brand-wrap">
-                <img src="{{ asset('assets/logo.jpeg') }}" alt="Brand" class="brand-logo" onerror="this.style.display='none'" />
+                <img src="{{ asset('assets/logo_bg.png') }}" alt="Brand" class="brand-logo" decoding="async" onerror="this.style.display='none'" />
             </div>
             <!-- Sidebar text removed to show only logo -->
         </div>

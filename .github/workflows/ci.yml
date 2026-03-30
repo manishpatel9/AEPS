@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Validate composer
+        run: composer --version
+
+      - name: Install dependencies (no dev)
+        run: composer install --no-interaction --no-suggest --prefer-dist --no-dev --optimize-autoloader
+
+      - name: Run composer audit
+        run: composer audit --no-interaction || true
+
+      - name: Run tests
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+          SESSION_DRIVER: array
+        run: vendor/bin/phpunit --colors=never
