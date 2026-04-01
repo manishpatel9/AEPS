@@ -42,8 +42,26 @@ class AdminController extends Controller
               ->orWhere('email', 'like', "%{$request->search}%")
               ->orWhere('mobile', 'like', "%{$request->search}%");
         });
-        $users = $query->with('wallet', 'profile')->latest()->paginate(20);
+        $users = $query->with('wallet', 'profile', 'parents')
+            ->withCount(['children as retailer_count' => function($q){ $q->where('role', 'retailer'); }])
+            ->latest()
+            ->paginate(20);
         return view('admin.users.index', compact('users'));
+    }
+
+    /**
+     * Show retailers under a distributor
+     */
+    public function distributorRetailers($id)
+    {
+        $distributor = User::findOrFail($id);
+        if ($distributor->role !== 'distributor') abort(404);
+
+        $retailers = User::whereHas('parents', function($q) use ($id) {
+            $q->where('parent_id', $id);
+        })->where('role', 'retailer')->with('wallet', 'profile')->latest()->paginate(20);
+
+        return view('admin.users.distributor_retailers', compact('distributor', 'retailers'));
     }
 
     public function createUser()
@@ -122,6 +140,9 @@ class AdminController extends Controller
         }
 
         // Handle parent distributor mapping for retailer/agent-like roles
+        $oldParent = $user->parents()->first();
+        $oldParentId = $oldParent ? $oldParent->id : null;
+
         if ($request->filled('parent_id')) {
             $parentId = $request->parent_id;
             $distributor = User::find($parentId);
@@ -137,6 +158,27 @@ class AdminController extends Controller
             if ($request->has('parent_id')) {
                 UserRelation::where('child_id', $user->id)->delete();
             }
+        }
+
+        // Log mapping change if distributor changed
+        $newParent = $user->parents()->first();
+        $newParentId = $newParent ? $newParent->id : null;
+        if ($oldParentId !== $newParentId) {
+            $desc = '';
+            if ($oldParentId && $newParentId) {
+                $desc = "Admin " . auth()->user()->name . " changed distributor for user {$user->email} from {$oldParent->name} to {$newParent->name}";
+            } elseif ($newParentId) {
+                $desc = "Admin " . auth()->user()->name . " assigned distributor {$newParent->name} to user {$user->email}";
+            } else {
+                $desc = "Admin " . auth()->user()->name . " unassigned distributor from user {$user->email}";
+            }
+
+            ActivityLog::create([
+                'user_id' => auth()->id(),
+                'action' => 'map_distributor',
+                'description' => $desc,
+                'ip_address' => $request->ip(),
+            ]);
         }
 
         AuditLog::create([
