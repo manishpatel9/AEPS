@@ -102,16 +102,16 @@
             box-shadow: 12px 0 30px rgba(8,15,30,0.35);
         }
         .sidebar-brand {
-            padding: 22px 20px;
+            padding: 18px 20px;
             border-bottom: 1px solid var(--sidebar-border);
             display: flex; align-items: center; gap: 12px;
         }
         .sidebar-brand .brand-wrap {
-            width: 160px; height: 48px; display:flex; align-items:center; justify-content:flex-start;
+            width: 220px; height: 64px; display:flex; align-items:center; justify-content:flex-start;
             padding:0; background:transparent; border-radius:12px; overflow:hidden;
         }
         .sidebar-brand .brand-wrap img.brand-logo {
-            max-width: 160px; max-height: 48px; width: auto; height: auto; object-fit:contain; display:block;
+            max-width: 220px; max-height: 64px; width: auto; height: auto; object-fit:contain; display:block;
         }
         .sidebar { scrollbar-width: thin; }
         .sidebar::-webkit-scrollbar { width: 10px; }
@@ -809,7 +809,7 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
                 <div class="brand-wrap">
-                <img src="{{ asset('assets/logo_bg.png') }}" alt="Brand" class="brand-logo" decoding="async" onerror="this.style.display='none'" />
+                <img src="{{ asset('assets/logo.jpeg') }}" alt="Brand" class="brand-logo" decoding="async" onerror="this.style.display='none'" />
             </div>
             <!-- Sidebar text removed to show only logo -->
         </div>
@@ -848,6 +848,9 @@
                 @elseif(auth()->user()->isDistributor())
                     <div class="nav-section">Dashboard</div>
                     <a href="{{ route('distributor.dashboard') }}" class="nav-item {{ request()->routeIs('distributor.dashboard') ? 'active' : '' }}"><i class="fas fa-chart-pie"></i> Dashboard</a>
+
+                    <div class="nav-section">User Management</div>
+                    <a href="{{ route('distributor.retailers.create') }}" class="nav-item {{ request()->routeIs('distributor.retailers*') ? 'active' : '' }}"><i class="fas fa-user-plus"></i> Create Retailer</a>
 
                     <div class="nav-section">Financial</div>
                     <a href="{{ route('wallet.index') }}" class="nav-item {{ request()->routeIs('wallet.index') ? 'active' : '' }}"><i class="fas fa-wallet"></i> Wallet</a>

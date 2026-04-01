@@ -32,7 +32,7 @@ class ContactAcknowledgement extends Mailable
      */
     public function build()
     {
-        return $this->subject('Thank you for your inquiry - ' . $this->brandName)
+        return $this->subject('Thank you for your enquiry - ' . $this->brandName)
             ->view('emails.contact_acknowledgement')
             ->with([
                 'contact' => $this->contact,

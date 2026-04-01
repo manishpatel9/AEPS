@@ -112,12 +112,31 @@ class AdminController extends Controller
             'mobile' => 'required|string|size:10|unique:users,mobile,' . $id,
             'role' => 'required|in:admin,distributor,retailer',
             'status' => 'required|in:active,inactive,suspended,pending',
+            'parent_id' => 'nullable|exists:users,id',
         ]);
 
         $oldValues = $user->toArray();
         $user->update($request->only('name', 'email', 'mobile', 'role', 'status'));
         if ($request->password) {
             $user->update(['password' => Hash::make($request->password)]);
+        }
+
+        // Handle parent distributor mapping for retailer/agent-like roles
+        if ($request->filled('parent_id')) {
+            $parentId = $request->parent_id;
+            $distributor = User::find($parentId);
+            if (!$distributor || $distributor->role !== 'distributor') {
+                return redirect()->back()->withErrors(['parent_id' => 'Selected distributor is invalid.'])->withInput();
+            }
+
+            // Remove any existing parent relations for this child, then add the new one
+            UserRelation::where('child_id', $user->id)->delete();
+            UserRelation::create(['parent_id' => $distributor->id, 'child_id' => $user->id]);
+        } else {
+            // If parent_id blank, remove existing relation (unassign)
+            if ($request->has('parent_id')) {
+                UserRelation::where('child_id', $user->id)->delete();
+            }
         }
 
         AuditLog::create([

@@ -17,6 +17,14 @@
                     <div class="form-group"><label>Role</label><select name="role" class="form-control" required><option value="retailer" {{ $user->role==='retailer'?'selected':'' }}>Retailer</option><option value="distributor" {{ $user->role==='distributor'?'selected':'' }}>Distributor</option><option value="admin" {{ $user->role==='admin'?'selected':'' }}>Admin</option></select></div>
                     <div class="form-group"><label>Status</label><select name="status" class="form-control" required><option value="active" {{ $user->status==='active'?'selected':'' }}>Active</option><option value="pending" {{ $user->status==='pending'?'selected':'' }}>Pending</option><option value="suspended" {{ $user->status==='suspended'?'selected':'' }}>Suspended</option><option value="inactive" {{ $user->status==='inactive'?'selected':'' }}>Inactive</option></select></div>
                 </div>
+                <div class="form-group"><label>Distributor (assign/unassign)</label>
+                    <select name="parent_id" class="form-control">
+                        <option value="">-- None --</option>
+                        @foreach($distributors as $d)
+                            <option value="{{ $d->id }}" {{ $user->parents->contains($d) ? 'selected' : '' }}>{{ $d->name }} ({{ $d->mobile }})</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="form-group"><label>New Password (leave blank to keep current)</label><input type="password" name="password" class="form-control" minlength="6"></div>
                 <div style="display:flex;gap:12px;"><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update User</button><a href="{{ route('admin.users') }}" class="btn btn-secondary">Cancel</a></div>
             </form>

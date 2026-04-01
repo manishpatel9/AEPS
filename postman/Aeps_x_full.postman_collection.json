@@ -1,0 +1,68 @@
+{
+  "info": {
+    "name": "Aeps_x Backend - Full Tests",
+    "_postman_id": "aeps-x-full",
+    "description": "Comprehensive collection for admin, distributor, retailer and public endpoints. Use the Aeps_x Local environment.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get CSRF Token",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{base_url}}/", "host": ["{{base_url}}"], "path": ["/"] }
+      },
+      "event": [{ "listen": "test", "script": { "exec": ["var html = pm.response.text();","var m = html.match(/meta name=\"csrf-token\" content=\"([^\"]+)\"/);","if (m) pm.environment.set('csrf_token', m[1]);","pm.test('csrf set', function(){ pm.expect(pm.environment.get('csrf_token')).to.not.be.undefined; });"]}}]
+    },
+    {
+      "name": "Login (form)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+        "body": { "mode": "urlencoded", "urlencoded": [
+          { "key": "email", "value": "{{user_email}}", "type": "text" },
+          { "key": "password", "value": "{{user_password}}", "type": "text" },
+          { "key": "_token", "value": "{{csrf_token}}", "type": "text" }
+        ]},
+        "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] }
+      },
+      "event": [
+        { "listen": "prerequest", "script": { "exec": [
+          "if (!pm.environment.get('csrf_token')) {",
+          "  pm.sendRequest(pm.environment.get('base_url') + '/', function (err, res) {",
+          "    if (!err) { var m = res.text().match(/meta name=\\\"csrf-token\\\" content=\\\"([^\\\"]+)\\\"/); if (m) pm.environment.set('csrf_token', m[1]); }",
+          "  });",
+          "}"
+        ]}},
+        { "listen": "test", "script": { "exec": [
+          "var cookie = pm.cookies.get('laravel_session');",
+          "if (cookie) pm.environment.set('laravel_session', cookie);",
+          "pm.test('session cookie present', function () { pm.expect(cookie).to.not.be.undefined; });"
+        ]}}
+      ]
+    },
+    { "name": "Public - Contact", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/x-www-form-urlencoded"}], "body": { "mode": "urlencoded","urlencoded":[{ "key":"name","value":"Postman Test","type":"text"},{"key":"email","value":"test@example.com","type":"text"},{"key":"message","value":"Hello","type":"text"},{"key":"_token","value":"{{csrf_token}}","type":"text"}]}, "url": {"raw":"{{base_url}}/contact","host":["{{base_url}}"],"path":["contact"]}}},
+
+    { "name": "Admin - Dashboard", "request": { "method": "GET", "url": { "raw": "{{base_url}}/admin/dashboard", "host": ["{{base_url}}"], "path": ["admin","dashboard"] } } },
+    { "name": "Admin - Users List", "request": { "method": "GET", "url": { "raw": "{{base_url}}/admin/users", "host": ["{{base_url}}"], "path": ["admin","users"] } } },
+    { "name": "Admin - Create User", "request": { "method": "POST", "header":[{"key":"Content-Type","value":"application/x-www-form-urlencoded"}], "body": { "mode":"urlencoded","urlencoded":[{"key":"name","value":"API User","type":"text"},{"key":"email","value":"apiuser@example.com","type":"text"},{"key":"mobile","value":"7000000000","type":"text"},{"key":"password","value":"password123","type":"text"},{"key":"password_confirmation","value":"password123","type":"text"},{"key":"_token","value":"{{csrf_token}}","type":"text"}]}, "url": { "raw":"{{base_url}}/admin/users","host":["{{base_url}}"],"path":["admin","users"] } } },
+
+    { "name": "Admin - Banks List", "request": { "method": "GET", "url": { "raw": "{{base_url}}/admin/banks", "host": ["{{base_url}}"], "path": ["admin","banks"] } } },
+    { "name": "Admin - Create Bank", "request": { "method": "POST", "header":[{"key":"Content-Type","value":"application/x-www-form-urlencoded"}], "body": { "mode":"urlencoded","urlencoded":[{"key":"bank_name","value":"Test Bank","type":"text"},{"key":"iin_number","value":"999999","type":"text"},{"key":"_token","value":"{{csrf_token}}","type":"text"}]}, "url": { "raw":"{{base_url}}/admin/banks","host":["{{base_url}}"],"path":["admin","banks"] } } },
+
+    { "name": "Admin - API Providers", "request": { "method": "GET", "url": { "raw": "{{base_url}}/admin/api-providers", "host": ["{{base_url}}"], "path": ["admin","api-providers"] } } },
+    { "name": "Admin - Service Charges", "request": { "method": "GET", "url": { "raw": "{{base_url}}/admin/service-charges", "host": ["{{base_url}}"], "path": ["admin","service-charges"] } } },
+
+    { "name": "Distributor - Dashboard", "request": { "method": "GET", "url": { "raw": "{{base_url}}/distributor/dashboard", "host": ["{{base_url}}"], "path": ["distributor","dashboard"] } } },
+
+    { "name": "Retailer - Dashboard", "request": { "method": "GET", "url": { "raw": "{{base_url}}/retailer/dashboard", "host": ["{{base_url}}"], "path": ["retailer","dashboard"] } } },
+    { "name": "AEPS - Mini Statement (retailer)", "request": { "method": "POST", "header": [{ "key":"Content-Type","value":"application/x-www-form-urlencoded" },{ "key":"X-CSRF-TOKEN","value":"{{csrf_token}}" }], "body": { "mode":"urlencoded","urlencoded":[{"key":"aadhaar_number","value":"{{aadhaar_number}}","type":"text"},{"key":"bank_id","value":"{{bank_id}}","type":"text"},{"key":"_token","value":"{{csrf_token}}","type":"text"}]}, "url": { "raw":"{{base_url}}/retailer/aeps/mini-statement","host":["{{base_url}}"],"path":["retailer","aeps","mini-statement"] } } },
+    { "name": "AEPS - Cash Withdrawal (retailer)", "request": { "method": "POST", "header": [{ "key":"Content-Type","value":"application/x-www-form-urlencoded" },{ "key":"X-CSRF-TOKEN","value":"{{csrf_token}}" }], "body": { "mode":"urlencoded","urlencoded":[{"key":"aadhaar_number","value":"{{aadhaar_number}}","type":"text"},{"key":"bank_id","value":"{{bank_id}}","type":"text"},{"key":"amount","value":"100","type":"text"},{"key":"_token","value":"{{csrf_token}}","type":"text"}]}, "url": { "raw":"{{base_url}}/retailer/aeps/cash-withdrawal","host":["{{base_url}}"],"path":["retailer","aeps","cash-withdrawal"] } } },
+
+    { "name": "Bill Payment - Create (retailer)", "request": { "method": "POST", "header": [{ "key":"Content-Type","value":"application/x-www-form-urlencoded" }], "body": { "mode":"urlencoded","urlencoded":[{"key":"biller","value":"Electric","type":"text"},{"key":"amount","value":"100","type":"text"},{"key":"_token","value":"{{csrf_token}}","type":"text"}]}, "url": { "raw":"{{base_url}}/retailer/bill-payments","host":["{{base_url}}"],"path":["retailer","bill-payments"] } } },
+
+    { "name": "Profile - Get", "request": { "method": "GET", "url": { "raw": "{{base_url}}/profile", "host": ["{{base_url}}"], "path": ["profile"] } } },
+    { "name": "Wallet - Index", "request": { "method": "GET", "url": { "raw": "{{base_url}}/wallet", "host": ["{{base_url}}"], "path": ["wallet"] } } }
+  ],
+  "event": [ { "listen": "prerequest", "script": { "exec": [ "if (!pm.environment.get('base_url')) { console.warn('Please set environment variable base_url'); }" ] } } ]
+}

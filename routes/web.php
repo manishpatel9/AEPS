@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AepsController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\BillPaymentController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\ProfileController;
@@ -160,6 +161,8 @@ Route::middleware('auth')->group(function () {
     // ========== DISTRIBUTOR ROUTES ==========
     Route::middleware('role:distributor')->prefix('distributor')->name('distributor.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'distributor'])->name('dashboard');
+        Route::get('/retailers/create', [DistributorController::class, 'createRetailer'])->name('retailers.create');
+        Route::post('/retailers', [DistributorController::class, 'storeRetailer'])->name('retailers.store');
         Route::get('/add-funds', [WalletController::class, 'addFunds'])->name('add_funds');
         Route::post('/add-funds', [WalletController::class, 'processAddFunds'])->name('add_funds.process');
     });

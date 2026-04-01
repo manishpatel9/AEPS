@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thank You for Your Inquiry</title>
+    <title>Thank You for Your Enquiry</title>
     <style>
         img { border:0; -ms-interpolation-mode:bicubic; }
         a { color:inherit; }
@@ -39,7 +39,7 @@
                             @else
                                 <div style="font-size:42px;font-weight:800;line-height:1;color:#ffffff;letter-spacing:-1px;">{{ $brandName }}</div>
                             @endif
-                            <div style="font-size:22px;font-weight:800;color:#ffffff;margin-top:18px;">Thank You for Your Inquiry!</div>
+                            <div style="font-size:22px;font-weight:800;color:#ffffff;margin-top:18px;">Thank You for Your Enquiry!</div>
                             <div style="font-size:15px;line-height:1.7;color:rgba(255,255,255,0.9);margin-top:8px;max-width:520px;margin-left:auto;margin-right:auto;">
                                 We've received your message. One of our support team members will get back to you shortly.
                             </div>
@@ -52,7 +52,7 @@
                                     <td class="content-card">
                                         <div style="font-size:18px;font-weight:800;color:#153a7b;text-align:center;">Hi {{ $contact->name }},</div>
                                         <div style="font-size:15px;line-height:1.8;color:#334155;text-align:center;margin-top:14px;max-width:560px;margin-left:auto;margin-right:auto;">
-                                            Thank you for reaching out to {{ $brandName }}. We have received your inquiry and a member of our support team will review your message shortly.
+                                            Thank you for reaching out to {{ $brandName }}. We have received your enquiry and a member of our support team will review your message shortly.
                                         </div>
                                         <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin-top:26px;background:rgba(255,255,255,0.66);border:1px solid rgba(255,255,255,0.7);border-radius:16px;">
                                             <tr>
