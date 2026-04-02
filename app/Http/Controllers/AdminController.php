@@ -352,9 +352,33 @@ class AdminController extends Controller
     }
 
     // ========== SUPPORT TICKETS ==========
-    public function supportTickets()
+    public function supportTickets(Request $request)
     {
-        $tickets = SupportTicket::with('user')->latest()->paginate(20);
+        $query = SupportTicket::with('user');
+
+        if ($request->q) {
+            $s = $request->q;
+            $query->where(function($q) use ($s) {
+                $q->where('subject', 'like', "%{$s}%")
+                  ->orWhere('description', 'like', "%{$s}%")
+                  ->orWhere('ticket_id', 'like', "%{$s}%")
+                  ->orWhereHas('user', function($u) use ($s) {
+                      $u->where('name', 'like', "%{$s}%")
+                        ->orWhere('email', 'like', "%{$s}%")
+                        ->orWhere('mobile', 'like', "%{$s}%");
+                  });
+            });
+        }
+
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->priority) {
+            $query->where('priority', $request->priority);
+        }
+
+        $tickets = $query->latest()->paginate(20)->appends($request->only(['q','status','priority']));
         return view('admin.support_tickets.index', compact('tickets'));
     }
 

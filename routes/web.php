@@ -156,6 +156,9 @@ Route::middleware('auth')->group(function () {
         // Add Funds
         Route::get('/add-funds', [WalletController::class, 'addFunds'])->name('add_funds');
         Route::post('/add-funds', [WalletController::class, 'processAddFunds'])->name('add_funds.process');
+
+        // Distributor retailers list
+        Route::get('/distributors/{id}/retailers', [AdminController::class, 'distributorRetailers'])->name('users.distributor_retailers');
     });
 
     // ========== DISTRIBUTOR ROUTES ==========

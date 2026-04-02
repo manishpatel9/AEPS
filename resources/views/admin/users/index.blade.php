@@ -16,12 +16,20 @@
         </form>
         <div class="table-responsive">
             <table>
-                <thead><tr><th>Name</th><th>Email</th><th>Mobile</th><th>Role</th><th>Wallet</th><th>KYC</th><th>Status</th><th>Actions</th></tr></thead>
+                <thead><tr><th>Name</th><th>Email</th><th>Mobile</th><th>Role</th><th>Retailers</th><th>Distributor</th><th>Wallet</th><th>KYC</th><th>Status</th><th>Actions</th></tr></thead>
                 <tbody>
                 @forelse($users as $u)
                     <tr>
                         <td style="font-weight:600;">{{ $u->name }}</td><td>{{ $u->email }}</td><td>{{ $u->mobile }}</td>
                         <td><span class="badge badge-{{ $u->role==='admin'?'primary':($u->role==='distributor'?'info':'warning') }}">{{ ucfirst($u->role) }}</span></td>
+                        <td>
+                            @if($u->role === 'distributor')
+                                <a href="{{ route('admin.users.distributor_retailers', $u->id) }}">{{ $u->retailer_count ?? 0 }} retailers</a>
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td>{{ $u->parents->first() ? $u->parents->first()->name . ' (' . $u->parents->first()->mobile . ')' : '-' }}</td>
                         <td style="font-weight:600;">₹{{ number_format($u->wallet->balance ?? 0, 2) }}</td>
                         <td><span class="badge badge-{{ ($u->profile->kyc_status ?? 'pending')==='verified'?'success':'warning' }}">{{ ucfirst($u->profile->kyc_status ?? 'pending') }}</span></td>
                         <td><span class="badge badge-{{ $u->status==='active'?'success':($u->status==='pending'?'warning':'danger') }}">{{ ucfirst($u->status) }}</span></td>
@@ -33,7 +41,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="8" style="text-align:center;padding:40px;color:#64748b;">No users found</td></tr>
+                    <tr><td colspan="9" style="text-align:center;padding:40px;color:#64748b;">No users found</td></tr>
                 @endforelse
                 </tbody>
             </table>

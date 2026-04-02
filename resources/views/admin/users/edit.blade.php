@@ -25,6 +25,17 @@
                         @endforeach
                     </select>
                 </div>
+
+                @section('scripts')
+                    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+                    <script>
+                        $(function(){
+                            $('select[name="parent_id"]').select2({ placeholder: '-- None --', allowClear: true, width: '100%' });
+                        });
+                    </script>
+                @endsection
                 <div class="form-group"><label>New Password (leave blank to keep current)</label><input type="password" name="password" class="form-control" minlength="6"></div>
                 <div style="display:flex;gap:12px;"><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update User</button><a href="{{ route('admin.users') }}" class="btn btn-secondary">Cancel</a></div>
             </form>

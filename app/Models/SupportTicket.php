@@ -4,6 +4,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class SupportTicket extends Model
 {
-    protected $fillable = ['user_id', 'subject', 'description', 'priority', 'status', 'admin_reply'];
+    protected $fillable = ['user_id', 'ticket_id', 'subject', 'description', 'priority', 'status', 'admin_reply'];
     public function user() { return $this->belongsTo(User::class); }
 }

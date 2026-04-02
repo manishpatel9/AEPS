@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SupportTicket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class SupportController extends Controller
 {
@@ -26,8 +27,14 @@ class SupportController extends Controller
             'priority' => 'required|in:low,medium,high,critical',
         ]);
 
+        // generate a short unique ticket id (e.g. TKT8F4A1B2)
+        do {
+            $ticketId = 'TKT' . strtoupper(Str::random(8));
+        } while (SupportTicket::where('ticket_id', $ticketId)->exists());
+
         SupportTicket::create([
             'user_id' => auth()->id(),
+            'ticket_id' => $ticketId,
             'subject' => $request->subject,
             'description' => $request->description,
             'priority' => $request->priority,

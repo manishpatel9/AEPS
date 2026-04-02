@@ -21,7 +21,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table>
-                    <thead><tr><th>Ticket ID</th><th>Subject</th><th>Priority</th><th>Status</th><th>Submitted On</th></tr></thead>
+                    <thead><tr><th>Ticket ID</th><th>Subject</th><th>Priority</th><th>Status</th><th>Reply</th><th>Submitted On</th></tr></thead>
                     <tbody>
                     @forelse($tickets as $t)
                         <tr>
@@ -29,6 +29,7 @@
                             <td style="font-weight:600;">{{ $t->subject }}</td>
                             <td><span class="badge badge-{{ $t->priority==='high'?'danger':($t->priority==='medium'?'warning':'info') }}">{{ ucfirst($t->priority) }}</span></td>
                             <td><span class="badge badge-{{ $t->status==='closed'?'success':($t->status==='open'?'danger':'warning') }}">{{ ucfirst(str_replace('_', ' ', $t->status)) }}</span></td>
+                            <td style="max-width:300px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:13px;">{{ $t->admin_reply ? $t->admin_reply : '-' }}</td>
                             <td style="font-size:12px;">{{ $t->created_at->format('d M Y H:i') }}</td>
                         </tr>
                     @empty

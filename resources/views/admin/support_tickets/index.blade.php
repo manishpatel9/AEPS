@@ -5,6 +5,27 @@
 <div class="card">
     <div class="card-header"><h3><i class="fas fa-ticket-alt" style="margin-right:8px;color:#818cf8;"></i>Support Tickets</h3></div>
     <div class="card-body">
+        <div style="margin-bottom:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <form method="GET" action="" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <input type="text" name="q" placeholder="Search ticket id, subject, user..." value="{{ request('q') }}" class="form-control" style="min-width:220px;" />
+                <select name="status" class="form-control" style="width:150px;">
+                    <option value="">All Status</option>
+                    <option value="open" {{ request('status')=='open'?'selected':'' }}>Open</option>
+                    <option value="in_progress" {{ request('status')=='in_progress'?'selected':'' }}>In Progress</option>
+                    <option value="resolved" {{ request('status')=='resolved'?'selected':'' }}>Resolved</option>
+                    <option value="closed" {{ request('status')=='closed'?'selected':'' }}>Closed</option>
+                </select>
+                <select name="priority" class="form-control" style="width:150px;">
+                    <option value="">All Priority</option>
+                    <option value="low" {{ request('priority')=='low'?'selected':'' }}>Low</option>
+                    <option value="medium" {{ request('priority')=='medium'?'selected':'' }}>Medium</option>
+                    <option value="high" {{ request('priority')=='high'?'selected':'' }}>High</option>
+                    <option value="critical" {{ request('priority')=='critical'?'selected':'' }}>Critical</option>
+                </select>
+                <button class="btn btn-sm btn-secondary" type="submit">Filter</button>
+                <a href="{{ route('admin.support_tickets') }}" class="btn btn-sm btn-light">Reset</a>
+            </form>
+        </div>
         <div class="table-responsive">
             <table>
                 <thead><tr><th>Ticket ID</th><th>User</th><th>Subject</th><th>Description</th><th>Priority</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
@@ -20,13 +41,14 @@
                         <td style="font-size:12px;">{{ $t->created_at->format('d M Y') }}</td>
                         <td>
                             @if($t->status !== 'closed')
-                            <form method="POST" action="{{ route('admin.support_tickets.update', $t->id) }}" style="display:flex;gap:4px;">
+                            <form method="POST" action="{{ route('admin.support_tickets.reply', $t->id) }}" style="display:flex;gap:8px;align-items:center;">
                                 @csrf @method('PUT')
-                                <select name="status" class="form-control" style="padding:4px;font-size:12px;width:100px;">
+                                <textarea name="admin_reply" class="form-control" placeholder="Write a reply (optional)" style="height:40px;max-width:420px;min-width:180px;">{{ old('admin_reply', $t->admin_reply) }}</textarea>
+                                <select name="status" class="form-control" style="padding:6px;font-size:12px;width:130px;">
                                     <option value="in_progress" {{ $t->status=='in_progress'?'selected':'' }}>In Progress</option>
                                     <option value="closed">Close</option>
                                 </select>
-                                <button class="btn btn-sm btn-primary" style="padding:4px 8px;"><i class="fas fa-save"></i></button>
+                                <button class="btn btn-sm btn-primary" style="padding:6px 10px;"><i class="fas fa-save"></i></button>
                             </form>
                             @else
                             <span style="color:#64748b;font-size:12px;">Closed</span>
