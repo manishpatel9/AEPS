@@ -260,8 +260,65 @@ class AdminController extends Controller
 
     public function storeServiceCharge(Request $request)
     {
+        // Accept either legacy single-item form or the new bulk `charges` table input
+        if ($request->has('charges') && is_array($request->input('charges'))) {
+            $data = $request->input('charges');
+            $rules = [];
+            foreach ($data as $serviceType => $vals) {
+                $rules["charges.$serviceType.business_partner"] = 'nullable|numeric|min:0';
+                $rules["charges.$serviceType.master_distributor"] = 'nullable|numeric|min:0';
+                $rules["charges.$serviceType.distributor"] = 'nullable|numeric|min:0';
+                $rules["charges.$serviceType.agent"] = 'nullable|numeric|min:0';
+                $rules["charges.$serviceType.type"] = 'required|in:percent,flat';
+            }
+
+            $request->validate($rules);
+
+            foreach ($data as $serviceType => $vals) {
+                // Build payload using dedicated per-role columns (Business Partner column removed)
+                $payload = [
+                    'service_type' => $serviceType,
+                    'commission_type' => $vals['type'] ?? 'percent',
+                    'master_distributor' => isset($vals['master_distributor']) ? (float)$vals['master_distributor'] : 0,
+                    'distributor' => isset($vals['distributor']) ? (float)$vals['distributor'] : 0,
+                    'agent' => isset($vals['agent']) ? (float)$vals['agent'] : 0,
+                    'amount' => 0,
+                    'percentage' => 0,
+                    'min_amount' => 0,
+                    'max_amount' => 0,
+                    'status' => 'active',
+                ];
+
+                // Use master_distributor value as representative for percentage/amount mapping
+                if (($payload['commission_type'] ?? 'percent') === 'percent') {
+                    $payload['percentage'] = $payload['master_distributor'];
+                } else {
+                    $payload['amount'] = $payload['master_distributor'];
+                }
+
+                // Upsert by service_type
+                $existing = ServiceCharge::where('service_type', $serviceType)->first();
+                if ($existing) {
+                    $existing->update($payload);
+                } else {
+                    ServiceCharge::create($payload);
+                }
+            }
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Service charges updated.']);
+            }
+
+            return back()->with('success', 'Service charges updated.');
+        }
+
+        // Fallback: legacy single-row form
         $request->validate(['service_type' => 'required', 'amount' => 'required|numeric|min:0']);
         ServiceCharge::create($request->only('service_type', 'amount', 'percentage', 'min_amount', 'max_amount', 'status'));
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Service charge added.']);
+        }
+
         return back()->with('success', 'Service charge added.');
     }
 

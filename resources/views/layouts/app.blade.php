@@ -606,17 +606,110 @@
             display: none; background: none; border: none;
             color: var(--text-primary); font-size: 22px; cursor: pointer;
         }
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.55);
+            z-index: 995;
+            opacity: 0;
+            transition: opacity 0.22s ease;
+        }
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        @media (max-width: 1280px) {
+            .page-content { padding: 28px 24px 36px; }
+            .topbar { padding: 0 18px; }
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar { width: 228px; }
+            .main-content { margin-left: 228px; }
+            .topbar h1 { font-size: 18px; }
+            .topbar-right { gap: 10px; }
+            .topbar-search { min-width: 180px; }
+            table th, table td { padding: 12px 12px; }
+            .card-body { padding: 18px; }
+        }
+
+        @media (max-width: 900px) {
+            .page-hero { padding: 18px; }
+            .page-hero h2 { font-size: 32px; }
+            .card-header { padding: 14px 16px; }
+            .card-header h3 { font-size: 15px; }
+            .btn { padding: 9px 14px; }
+        }
+
         @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
+            .sidebar {
+                transform: translateX(-100%);
+                width: min(84vw, 320px);
+            }
             .sidebar.open { transform: translateX(0); }
             .main-content { margin-left: 0; }
             .mobile-toggle { display: block; }
             .stats-grid { grid-template-columns: 1fr; }
             .form-row { grid-template-columns: 1fr; }
             .topbar-search { display: none; }
-            .page-content { padding: 22px 18px 32px; }
-            .page-hero { padding: 22px 18px; }
+            .topbar {
+                height: 64px;
+                padding: 0 12px;
+            }
+            .topbar h1 {
+                font-size: 17px;
+                line-height: 1.2;
+            }
+            .topbar-right { gap: 8px; }
+            .topbar-user { padding: 6px 10px; }
+            .topbar-user .avatar { width: 28px; height: 28px; }
+            .topbar-user span { font-size: 13px; }
+            .topbar-user small { font-size: 10px; }
+            .page-content { padding: 18px 12px 28px; }
+            .page-hero {
+                padding: 16px 14px;
+                border-radius: 16px;
+            }
+            .page-hero h2 { font-size: 28px; }
+            .page-hero p { font-size: 13px; }
             .page-hero-actions { width: 100%; justify-content: flex-start; }
+            .card {
+                border-radius: 16px;
+                margin-bottom: 16px;
+            }
+            .card-body { padding: 12px; }
+            .table-responsive {
+                border-radius: 12px;
+                -webkit-overflow-scrolling: touch;
+            }
+            table { min-width: 640px; }
+            table th, table td {
+                padding: 10px;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+            .form-control {
+                min-height: 42px;
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+            .btn { padding: 8px 12px; font-size: 13px; }
+            .user-menu {
+                width: min(92vw, 320px);
+                right: 8px;
+                top: 60px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .nav-section { padding: 8px 16px 4px; }
+            .nav-item { margin: 3px 10px; padding: 9px 10px; font-size: 13px; }
+            .topbar h1 { font-size: 16px; }
+            .topbar-user div:last-child { display: none; }
+            .theme-menu { right: 10px; top: 58px; width: min(90vw, 260px); }
+            .alert { padding: 10px 12px; font-size: 13px; }
         }
 
         /* ========== MISC ========== */
@@ -797,9 +890,32 @@
         .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.06) 100%); background-size: 200% 100%; animation: shimmer 1.6s linear infinite; border-radius:6px; }
         @keyframes shimmer { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
 
-        @media (max-width: 1100px) {
+        @media (min-width: 769px) and (max-width: 1100px) {
             .sidebar { width: 240px; }
             .main-content { margin-left: 240px; }
+        }
+
+        @media (max-width: 420px) {
+            .page-content { padding: 14px 10px 22px; }
+            .page-hero { padding: 14px 12px; }
+            .page-hero h2 { font-size: 24px; }
+            .card-header { padding: 12px; }
+            .card-body { padding: 10px; }
+            .topbar {
+                padding: 0 8px;
+                height: 60px;
+            }
+            .topbar h1 {
+                font-size: 15px;
+                margin-left: 2px !important;
+            }
+            .mobile-toggle { font-size: 20px; }
+            .theme-toggle-btn {
+                width: 34px;
+                height: 34px;
+            }
+            .btn { padding: 8px 10px; font-size: 12px; }
+            table { min-width: 560px; }
         }
 </style>
     @yield('styles')
@@ -833,7 +949,7 @@
                     <div class="nav-section">System</div>
                     <a href="{{ route('admin.banks') }}" class="nav-item {{ request()->routeIs('admin.banks*') ? 'active' : '' }}"><i class="fas fa-university"></i> Banks</a>
                     <a href="{{ route('admin.api_providers') }}" class="nav-item {{ request()->routeIs('admin.api_providers*') ? 'active' : '' }}"><i class="fas fa-plug"></i> API Providers</a>
-                    <a href="{{ route('admin.service_charges') }}" class="nav-item {{ request()->routeIs('admin.service_charges*') ? 'active' : '' }}"><i class="fas fa-receipt"></i> Service Charges</a>
+                    <a href="{{ route('admin.service_charges') }}" class="nav-item {{ request()->routeIs('admin.service_charges*') ? 'active' : '' }}"><i class="fas fa-receipt"></i> Set Service Charges</a>
                     <a href="{{ route('admin.device_mappings') }}" class="nav-item {{ request()->routeIs('admin.device_mappings*') ? 'active' : '' }}"><i class="fas fa-fingerprint"></i> Devices</a>
                     <a href="{{ route('admin.support_tickets') }}" class="nav-item {{ request()->routeIs('admin.support_tickets*') ? 'active' : '' }}"><i class="fas fa-ticket-alt"></i> Support Tickets</a>
                     <a href="{{ route('admin.general_requests') }}" class="nav-item {{ request()->routeIs('admin.general_requests*') ? 'active' : '' }}"><i class="fas fa-envelope"></i> View General Requests</a>
@@ -892,12 +1008,13 @@
             @endauth
         </nav>
     </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
     <!-- Main Content -->
     <div class="main-content">
         <header class="topbar">
             <div style="display:flex;align-items:center;gap:16px;">
-                <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">
+                <button id="mobileSidebarToggle" class="mobile-toggle" type="button" aria-label="Toggle menu">
                     <i class="fas fa-bars"></i>
                 </button>
                 <h1 style="margin:0 0 0 8px;">@yield('page_title', 'Dashboard')</h1>
@@ -984,14 +1101,49 @@
     </div>
 
     <script>
-        // Close sidebar on mobile when clicking outside
-        document.addEventListener('click', function(e) {
+        // Mobile sidebar toggle + overlay + escape support
+        (function () {
             const sidebar = document.getElementById('sidebar');
-            const toggle = document.querySelector('.mobile-toggle');
-            if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
-                sidebar.classList.remove('open');
+            const toggle = document.getElementById('mobileSidebarToggle');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            if (!sidebar || !toggle || !overlay) return;
+
+            function openSidebar() {
+                sidebar.classList.add('open');
+                overlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
             }
-        });
+
+            function closeSidebar() {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            toggle.addEventListener('click', function () {
+                if (window.innerWidth > 768) return;
+                if (sidebar.classList.contains('open')) closeSidebar();
+                else openSidebar();
+            });
+
+            overlay.addEventListener('click', closeSidebar);
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closeSidebar();
+            });
+
+            window.addEventListener('resize', function () {
+                if (window.innerWidth > 768) closeSidebar();
+            });
+
+            // Close after selecting a nav item on mobile
+            sidebar.addEventListener('click', function (e) {
+                if (window.innerWidth <= 768 && e.target.closest('.nav-item')) {
+                    closeSidebar();
+                }
+            });
+        })();
     </script>
     <script>
         (function() {
